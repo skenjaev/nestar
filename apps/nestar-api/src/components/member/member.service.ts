@@ -15,4 +15,10 @@ export class MemberService {
         console.log('Mutation: updateMember');
         return 'updateMember executed'
     }
+
+    public async getMember(): Promise<string>{
+        console.log('Query: getMember');
+        return 'getMember executed';
+    }
+
 }

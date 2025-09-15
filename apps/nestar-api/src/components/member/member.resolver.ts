@@ -23,17 +23,12 @@ export class MemberResolver {
         return this.memberService.updateMember();
     }
 
-    @Mutation(() => String)
-    public async sigin(): Promise<string>{
-        console.log('Mutation: sigIn');
-        return 'signIn executed';
-    }
-
     @Query(() => String)
     public async getMember(): Promise<string>{
         console.log('Query: getMember');
         return this.memberService.getMember();
     }
-
-
 }
+
+
+//rest api documentation yasab beradigan narsa bu swagger api hamda design tool
