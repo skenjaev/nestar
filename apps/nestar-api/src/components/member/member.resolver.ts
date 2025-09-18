@@ -6,44 +6,41 @@ import { Member } from '../../libs/dto/member/member';
 
 @Resolver()
 export class MemberResolver {
-    constructor(private readonly memberService: MemberService) {}
+	constructor(private readonly memberService: MemberService) {}
 
-    @Mutation(() => Member)
-    @UsePipes(ValidationPipe)
-    public async signup( @Args('input') input: MemberInput ): Promise<Member> {
-        try {
-            console.log('Mutation: signup');
-            return this.memberService.signup(input);
-        } catch (err) {
-            console.log('signup error:',err);
-            throw new InternalServerErrorException(err);
-        }    
-    }
+	@Mutation(() => Member)
+	@UsePipes(ValidationPipe)
+	public async signup(@Args('input') input: MemberInput): Promise<Member> {
+		try {
+			console.log('Mutation: signup');
+			return this.memberService.signup(input);
+		} catch (err) {
+			console.log('Error, signup:', err);
+			throw new InternalServerErrorException(err);
+		}
+	}
 
-    @Mutation(() => Member)
-    public async login(@Args('input') input: LoginInput): Promise<Member>{
-        try {
-            console.log('Mutation: login');
-            return this.memberService.login(input);
-        } catch (err) {
-            console.log('login error:', err)
-            throw new InternalServerErrorException(err)
-        }
-        
-    }
+	@Mutation(() => Member)
+	@UsePipes(ValidationPipe)
+	public async login(@Args('input') input: LoginInput): Promise<Member> {
+		try {
+			console.log('Mutation: login');
+			return this.memberService.login(input);
+		} catch (err) {
+			console.log('Error, login:', err);
+			throw new InternalServerErrorException(err);
+		}
+	}
 
-    @Mutation(() => String)
-    public async updateMember(): Promise<string>{
-        console.log('Mutation: updateMember');
-        return this.memberService.updateMember();
-    }
+	@Mutation(() => String)
+	public async updateMember(): Promise<string> {
+		console.log('Mutation: updateMember');
+		return this.memberService.updateMember();
+	}
 
-    @Query(() => String)
-    public async getMember(): Promise<string>{
-        console.log('Query: getMember');
-        return this.memberService.getMember();
-    }
+	@Query(() => String)
+	public async getMember(): Promise<string> {
+		console.log('Query: getMember');
+		return this.memberService.getMember();
+	}
 }
-
-
-//rest api documentation yasab beradigan narsa bu swagger api hamda design tool
