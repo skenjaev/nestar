@@ -9,6 +9,7 @@ import { ObjectId } from 'mongoose';
 import { MemberType } from '../../libs/enums/member.enum';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { MemberUpdate } from '../../libs/dto/member/member.update';
 
 @Resolver()
 export class MemberResolver {
@@ -29,10 +30,14 @@ export class MemberResolver {
 	}
 
 	@UseGuards(AuthGuard) //AuthGurad
-	@Mutation(() => String) //updateMember
-	public async updateMember(@AuthMember('_id') memberId: ObjectId): Promise<string> {
+	@Mutation(() => Member) //updateMember
+	public async updateMember(
+		@Args('input') input: MemberUpdate,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<Member> {
 		console.log('Mutation: updateMember');
-		return this.memberService.updateMember();
+		delete input._id;
+		return this.memberService.updateMember(memberId, input);
 	}
 
 	// TEST
