@@ -50,10 +50,34 @@
 
 // TASK ZN
 
-function rotateArray(arr, index) {
-	const firstPart = arr.slice(0, index + 1);
-	const secondPart = arr.slice(index + 1);
-	return secondPart.concat(firstPart);
+// function rotateArray(arr, index) {
+// 	const firstPart = arr.slice(0, index + 1);
+// 	const secondPart = arr.slice(index + 1);
+// 	return secondPart.concat(firstPart);
+// }
+
+// console.log(rotateArray([1, 2, 3, 4, 5, 6], 3));
+
+// TASK ZO
+
+function areParenthesesBalanced(str) {
+	let balance = 0;
+
+	for (let char of str) {
+		if (char === '(') {
+			balance++;
+		} else if (char === ')') {
+			balance--;
+			if (balance < 0) {
+				return false;
+			}
+		}
+	}
+
+	return balance === 0;
 }
 
-console.log(rotateArray([1, 2, 3, 4, 5, 6], 3));
+console.log(areParenthesesBalanced('string()ichida(qavslar)soni()balansda'));
+console.log(areParenthesesBalanced('((()))'));
+console.log(areParenthesesBalanced('(()'));
+console.log(areParenthesesBalanced(')('));
