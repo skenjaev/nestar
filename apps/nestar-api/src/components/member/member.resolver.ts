@@ -101,7 +101,7 @@ export class MemberResolver {
 	}
 
 	//** UPLOADER **/
-
+	// imageUploader
 	@UseGuards(AuthGuard)
 	@Mutation((returns) => String)
 	public async imageUploader(
@@ -129,7 +129,7 @@ export class MemberResolver {
 
 		return url;
 	}
-
+	// imagesUploader
 	@UseGuards(AuthGuard)
 	@Mutation((returns) => [String])
 	public async imagesUploader(
