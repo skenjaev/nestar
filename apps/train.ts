@@ -60,24 +60,45 @@
 
 // TASK ZO
 
-function areParenthesesBalanced(str) {
-	let balance = 0;
+// function areParenthesesBalanced(str) {
+// 	let balance = 0;
 
-	for (let char of str) {
-		if (char === '(') {
-			balance++;
-		} else if (char === ')') {
-			balance--;
-			if (balance < 0) {
-				return false;
-			}
-		}
+// 	for (let char of str) {
+// 		if (char === '(') {
+// 			balance++;
+// 		} else if (char === ')') {
+// 			balance--;
+// 			if (balance < 0) {
+// 				return false;
+// 			}
+// 		}
+// 	}
+
+// 	return balance === 0;
+// }
+
+// console.log(areParenthesesBalanced('string()ichida(qavslar)soni()balansda'));
+// console.log(areParenthesesBalanced('((()))'));
+// console.log(areParenthesesBalanced('(()'));
+// console.log(areParenthesesBalanced(')('));
+
+// TASK
+
+function areArraysEqual(arr1: any[], arr2: any[]): boolean {
+	const set1 = new Set(arr1);
+	const set2 = new Set(arr2);
+
+	for (const val of set1) {
+		if (!set2.has(val)) return false;
 	}
 
-	return balance === 0;
+	for (const val of set2) {
+		if (!set1.has(val)) return false;
+	}
+
+	return true;
 }
 
-console.log(areParenthesesBalanced('string()ichida(qavslar)soni()balansda'));
-console.log(areParenthesesBalanced('((()))'));
-console.log(areParenthesesBalanced('(()'));
-console.log(areParenthesesBalanced(')('));
+console.log(areArraysEqual([1, 2, 3], [3, 1, 2]));
+console.log(areArraysEqual([1, 2, 3], [3, 1, 2, 1]));
+console.log(areArraysEqual([1, 2, 3], [4, 1, 2]));

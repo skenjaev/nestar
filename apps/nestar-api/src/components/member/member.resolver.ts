@@ -3,7 +3,7 @@ import { WithoutGuard } from './../auth/guards/without.guard';
 import { MemberService } from './member.service';
 import { AgentsInquiry, LoginInput, MemberInput, MembersInquiry } from '../../libs/dto/member/member.input';
 import { Member, Members } from '../../libs/dto/member/member';
-import { UseGuards } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
@@ -15,6 +15,7 @@ import { getSerialForImage, shapeIntoMogoObjectId, validMimeTypes } from '../../
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
 import { Message } from '../../libs/enums/common.enum';
+import { ExternalExceptionsHandler } from '@nestjs/core/exceptions/external-exceptions-handler';
 
 @Resolver()
 export class MemberResolver {
@@ -111,9 +112,9 @@ export class MemberResolver {
 	): Promise<string> {
 		console.log('Mutation: imageUploader');
 
-		if (!filename) throw new Error(Message.UPLOAD_FAILED);
+		if (!filename) throw new InternalServerErrorException(Message.UPLOAD_FAILED);
 		const validMime = validMimeTypes.includes(mimetype);
-		if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
+		if (!validMime) throw new BadRequestException(Message.PROVIDE_ALLOWED_FORMAT);
 
 		const imageName = getSerialForImage(filename);
 		const url = `uploads/${target}/${imageName}`;
@@ -125,7 +126,7 @@ export class MemberResolver {
 				.on('finish', async () => resolve(true))
 				.on('error', () => reject(false));
 		});
-		if (!result) throw new Error(Message.UPLOAD_FAILED);
+		if (!result) throw new InternalServerErrorException(Message.UPLOAD_FAILED);
 
 		return url;
 	}
@@ -145,7 +146,7 @@ export class MemberResolver {
 				const { filename, mimetype, encoding, createReadStream } = await img;
 
 				const validMime = validMimeTypes.includes(mimetype);
-				if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
+				if (!validMime) throw new BadRequestException(Message.PROVIDE_ALLOWED_FORMAT);
 
 				const imageName = getSerialForImage(filename);
 				const url = `uploads/${target}/${imageName}`;
@@ -157,7 +158,7 @@ export class MemberResolver {
 						.on('finish', () => resolve(true))
 						.on('error', () => reject(false));
 				});
-				if (!result) throw new Error(Message.UPLOAD_FAILED);
+				if (!result) throw new InternalServerErrorException(Message.UPLOAD_FAILED);
 
 				uploadedImages[index] = url;
 			} catch (err) {
