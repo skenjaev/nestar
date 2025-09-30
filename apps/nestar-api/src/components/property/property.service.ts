@@ -16,7 +16,7 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { PropertyUpdate } from '../../libs/dto/property/property.update';
 import * as moment from 'moment';
-import { lookupMember, shapeIntoMogoObjectId } from '../../libs/config';
+import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 
 @Injectable()
 export class PropertyService {
@@ -154,7 +154,7 @@ export class PropertyService {
 			options,
 			text,
 		} = input.search;
-		if (memberId) match.memberId = shapeIntoMogoObjectId(memberId);
+		if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
 		if (locationList) match.propertyLocation = { $in: locationList };
 		if (roomsList) match.propertyRooms = { $in: roomsList };
 		if (bedsList) match.propertyBeds = { $in: bedsList };
@@ -206,7 +206,7 @@ export class PropertyService {
 	}
 
 	/** ADMIN **/
-	//getAllPropertiesByAdmin
+	//getAllPropertiesByAdmin logic
 	public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties> {
 		const { propertyStatus, propertyLocationList } = input.search;
 		const match: T = {};
@@ -237,7 +237,7 @@ export class PropertyService {
 		return result[0];
 	}
 
-	// updatePropertyByAdmin
+	// updatePropertyByAdmin logic
 	public async updatePropertyByAdmin(input: PropertyUpdate): Promise<Property> {
 		let { propertyStatus, soldAt, deletedAt } = input;
 		const search: T = {
@@ -258,6 +258,15 @@ export class PropertyService {
 				modifier: -1,
 			});
 		}
+		return result;
+	}
+
+	// removePropertyByAdmin logic
+	public async removePropertyByAdmin(propertyId: ObjectId): Promise<Property> {
+		const search: T = { _id: propertyId, propertyStatus: PropertyStatus.DELETE };
+		const result = await this.propertyModel.findOneAndDelete(search).exec();
+		if (!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
+
 		return result;
 	}
 }
