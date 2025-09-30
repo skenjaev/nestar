@@ -173,6 +173,7 @@ class APISearch {
 	propertyStatus?: PropertyStatus;
 }
 
+// for getAgents logics
 @InputType()
 export class AgentPropertiesInquiry {
 	@IsNotEmpty()
@@ -197,4 +198,42 @@ export class AgentPropertiesInquiry {
 	@IsNotEmpty()
 	@Field(() => APISearch)
 	search: APISearch;
+}
+
+// for Properties byAdmin logics
+@InputType()
+class ALPISearch {
+	@IsOptional()
+	@Field(() => PropertyStatus, { nullable: true })
+	propertyStatus?: PropertyStatus;
+
+	@IsOptional()
+	@Field(() => [PropertyLocation], { nullable: true })
+	propertyLocationList?: PropertyLocation[];
+}
+
+@InputType()
+export class AllPropertiesInquiry {
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Int)
+	page: number;
+
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Int)
+	limit: number;
+
+	@IsOptional()
+	@IsIn(availablePropertySorts)
+	@Field(() => String, { nullable: true })
+	sort?: string;
+
+	@IsOptional()
+	@Field(() => Direction, { nullable: true })
+	direction?: Direction;
+
+	@IsNotEmpty()
+	@Field(() => ALPISearch)
+	search: ALPISearch;
 }
