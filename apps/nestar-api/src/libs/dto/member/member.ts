@@ -1,11 +1,19 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+<<<<<<< HEAD
 import { ObjectId } from 'mongoose';
+=======
+import type { ObjectId } from 'mongoose';
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 import { MemberAuthType, MemberStatus, MemberType } from '../../enums/member.enum';
 
 @ObjectType()
 export class Member {
 	@Field(() => String)
+<<<<<<< HEAD
 	_id: ObjectId;
+=======
+	_id?: ObjectId;
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 
 	@Field(() => MemberType)
 	memberType: MemberType;
@@ -22,7 +30,11 @@ export class Member {
 	@Field(() => String)
 	memberNick: string;
 
+<<<<<<< HEAD
 	memberPassword?: string;
+=======
+	memberPassword: string;
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 
 	@Field(() => String, { nullable: true })
 	memberFullName?: string;
@@ -73,10 +85,17 @@ export class Member {
 	deletedAt?: Date;
 
 	@Field(() => Date)
+<<<<<<< HEAD
 	createdAt: Date;
 
 	@Field(() => Date)
 	updatedAt: Date;
+=======
+	createdAt?: Date;
+
+	@Field(() => Date, { nullable: true })
+	updatedAt?: Date;
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 
 	@Field(() => String, { nullable: true })
 	accessToken?: string;
@@ -88,11 +107,20 @@ export class TotalCounter {
 	total: number;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 @ObjectType()
 export class Members {
 	@Field(() => [Member])
 	list: Member[];
 
 	@Field(() => [TotalCounter], { nullable: true })
+<<<<<<< HEAD
 	metaCounter: TotalCounter[];
 }
+=======
+	metaCounter: TotalCounter[]
+}
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)

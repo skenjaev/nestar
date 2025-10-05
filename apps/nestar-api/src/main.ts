@@ -6,6 +6,7 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import * as express from 'express';
 
 async function bootstrap() {
+<<<<<<< HEAD
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalPipes(new ValidationPipe());
 	app.useGlobalInterceptors(new LoggingInterceptor());
@@ -15,5 +16,16 @@ async function bootstrap() {
 	app.use('/uploads', express.static('./uploads')); // upload static folder
 
 	await app.listen(process.env.PORT_API ?? 3000);
+=======
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.enableCors({ origin: true, credentials: true });
+
+  app.use(graphqlUploadExpress({ maxFileSise: 15000000, maxFiles: 10 }));
+  app.use('/uploads', express.static('uploads'));
+
+  await app.listen(process.env.PORT_API ?? 3000);
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 }
 bootstrap();

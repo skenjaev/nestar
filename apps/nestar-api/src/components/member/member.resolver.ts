@@ -1,6 +1,10 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MemberService } from './member.service';
+<<<<<<< HEAD
 import { LoginInput, MemberInput, MembersInquiry } from '../../libs/dto/member/member.input';
+=======
+import { AgentsInquiry, LoginInput, MemberInput, MembersInquiry } from '../../libs/dto/member/member.input';
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 import { Member, Members } from '../../libs/dto/member/member';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guards/auth.guard';
@@ -62,10 +66,14 @@ export class MemberResolver {
 
   @UseGuards(WithoutGuard)
   @Query(() => Member)
+<<<<<<< HEAD
   public async getMember(
     @Args('memberId') input: string,
     @AuthMember('_id') memberId: ObjectId,
   ): Promise<Member | null> {
+=======
+  public async getMember(@Args('memberId') input: string, @AuthMember('_id') memberId: ObjectId): Promise<Member | null> {
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
     console.log('Query: getMember');
     console.log('memberId:', memberId);
     const targetId = shapeIntoMongoObjectId(input);
@@ -74,10 +82,14 @@ export class MemberResolver {
 
   @UseGuards(WithoutGuard)
   @Query(() => Members)
+<<<<<<< HEAD
   public async getAgents(
     @Args('input') input: MembersInquiry,
     @AuthMember('_id') memberId: ObjectId,
   ): Promise<Members> {
+=======
+  public async getAgents(@Args('input') input: AgentsInquiry, @AuthMember('_id') memberId: ObjectId): Promise<Members> {
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
     console.log('Query: getAgents');
     return await this.memberService.getAgents(memberId, input);
   }
@@ -105,7 +117,11 @@ export class MemberResolver {
   /** UPLOADER **/
 
   @UseGuards(AuthGuard)
+<<<<<<< HEAD
   @Mutation(() => String)
+=======
+  @Mutation((returns) => String)
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
   public async imageUploader(
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename, mimetype }: FileUpload,
@@ -133,17 +149,32 @@ export class MemberResolver {
   }
 
   @UseGuards(AuthGuard)
+<<<<<<< HEAD
   @Mutation(() => [String])
   public async imagesUploader(
     @Args('files', { type: () => [GraphQLUpload] }) files: Promise<FileUpload>[],
+=======
+  @Mutation((returns) => [String])
+  public async imagesUploader(
+    @Args('files', { type: () => [GraphQLUpload] })
+    files: Promise<FileUpload>[],
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
     @Args('target') target: String,
   ): Promise<string[]> {
     console.log('Mutation: imagesUploader');
 
+<<<<<<< HEAD
     const uploadedImages: string[] = [];
     const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<Promise<void>> => {
       try {
         const { filename, mimetype, createReadStream } = await img;
+=======
+    // const uploadedImages = [];
+    const uploadedImages: string[] = [];
+    const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<Promise<void>> => {
+      try {
+        const { filename, mimetype, encoding, createReadStream } = await img;
+>>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 
         const validMime = validMimeTypes.includes(mimetype);
         if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
