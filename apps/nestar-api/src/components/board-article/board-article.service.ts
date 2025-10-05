@@ -4,13 +4,20 @@ import { Model, ObjectId } from 'mongoose';
 import { BoardArticle, BoardArticles } from '../../libs/dto/board-article/board-article';
 import { MemberService } from '../member/member.service';
 import { ViewService } from '../view/view.service';
-import { AllBoardArticlesInquiry, BoardArticleInput, BoardArticlesInquiry } from '../../libs/dto/board-article/board-article.input';
+import {
+  AllBoardArticlesInquiry,
+  BoardArticleInput,
+  BoardArticlesInquiry,
+} from '../../libs/dto/board-article/board-article.input';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { BoardArticleStatus } from '../../libs/enums/board-article.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { BoardArticleUpdate } from '../../libs/dto/board-article/board-article.update';
 import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { LikeService } from '../like/like.service';
+import { LikeInput } from '../../libs/dto/like/like.input';
+import { LikeGroup } from '../../libs/enums/like.enum';
 
 @Injectable()
 export class BoardArticleService {
@@ -18,6 +25,7 @@ export class BoardArticleService {
     @InjectModel('BoardArticle') private readonly boardArticleModel: Model<BoardArticle>,
     private readonly memberService: MemberService,
     private readonly viewService: ViewService,
+    private readonly likeService: LikeService,
   ) {}
   // public async createBoardArticle(
   //   memberId: ObjectId,
@@ -162,6 +170,31 @@ export class BoardArticleService {
     return result[0];
   }
 
+  public async likeTargetBoardArticle(memberId: ObjectId, likeRefId: ObjectId): Promise<BoardArticle> {
+    // 1Like bosilayotgan target memberni topamiz
+    const target: BoardArticle | null = await this.boardArticleModel
+      .findOne({ _id: likeRefId, articleStatus: BoardArticleStatus.ACTIVE })
+      .exec();
+    if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+    const input: LikeInput = {
+      memberId: memberId,
+      likeRefId: likeRefId,
+      likeGroup: LikeGroup.ARTICLE,
+    };
+
+    // LIKE TOGGLE via Like modules
+    const modifier: number = await this.likeService.toggleLike(input);
+    const result = await this.boardArticleStatsEditor({
+      _id: likeRefId,
+      targetKey: 'articleLikes',
+      modifier,
+    });
+
+    if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+    return result;
+  }
+
   public async getAllBoardArticlesByAdmin(input: AllBoardArticlesInquiry): Promise<BoardArticles> {
     const { articleStatus, articleCategory } = input.search;
     const match: T = {};
@@ -195,23 +228,17 @@ export class BoardArticleService {
     return result[0];
   }
 
-  public async updateBoardArticleByAdmin(
-    input: BoardArticleUpdate,
-  ): Promise<BoardArticle> {
+  public async updateBoardArticleByAdmin(input: BoardArticleUpdate): Promise<BoardArticle> {
     const { _id, articleStatus } = input;
-  
+
     const result = await this.boardArticleModel
-      .findOneAndUpdate(
-        { _id: _id, articleStatus: BoardArticleStatus.ACTIVE },
-        input,
-        { new: true }
-      )
+      .findOneAndUpdate({ _id: _id, articleStatus: BoardArticleStatus.ACTIVE }, input, { new: true })
       .exec();
-  
+
     if (!result) {
       throw new InternalServerErrorException(Message.UPDATE_FAILED);
     }
-  
+
     // ❗️ Agar maqola o‘chirilib yuborilgan bo‘lsa — user statistikasi yangilanadi
     if (articleStatus === BoardArticleStatus.DELETE) {
       await this.memberService.memberStatsEditor({
@@ -220,27 +247,24 @@ export class BoardArticleService {
         modifier: -1,
       });
     }
-  
+
     return result;
   }
 
-  public async removeBoardArticleByAdmin(
-    articleId: ObjectId,
-  ): Promise<BoardArticle> {
+  public async removeBoardArticleByAdmin(articleId: ObjectId): Promise<BoardArticle> {
     const search: T = {
       _id: articleId,
       articleStatus: BoardArticleStatus.DELETE,
     };
-  
+
     const result = await this.boardArticleModel.findOneAndDelete(search).exec();
-  
+
     if (!result) {
       throw new InternalServerErrorException(Message.REMOVE_FAILED);
     }
-  
+
     return result;
   }
-
 
   public async boardArticleStatsEditor(input: StatisticModifier): Promise<BoardArticle | null> {
     const { _id, targetKey, modifier } = input;
