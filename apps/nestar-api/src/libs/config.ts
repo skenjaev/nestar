@@ -35,3 +35,7 @@ export const lookupMember = {
     as: 'memberData',
   },
 };
+
+// ---- fix: add missing aliases for sorts ----
+export const availableArticlesSorts = availableAgentSorts;
+export const availableCommentSorts = availableAgentSorts;
