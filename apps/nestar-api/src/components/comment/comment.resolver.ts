@@ -10,6 +10,9 @@ import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { CommentUpdate } from '../../libs/dto/comment/comment.update';
 import { shapeIntoMongoObjectId } from '../../libs/config';
 import { WithoutGuard } from '../auth/guards/without.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { MemberType } from '../../libs/enums/member.enum';
+import { RolesGuard } from '../auth/guards/roles.guard';
 // import { Comment, Comments } from '../../libs/dto/comment/comment';
 // import { ObjectId } from 'mongodb'
 
@@ -44,12 +47,22 @@ export class CommentResolver {
   ): Promise<Comments> {
     console.log('Query: getComments');
 
-    // 🧠 commentRefId ni ObjectId shakliga o'tkazamiz
     input.search.commentRefId = shapeIntoMongoObjectId(input.search.commentRefId);
 
-    // 🧠 Service orqali ma'lumotlarni olib kelamiz
+    // Service orqali ma'lumotlarni olib kelamiz
     const result = await this.commentService.getComments(memberId, input);
 
     return result;
+  }
+
+  /** ADMIN **/
+
+  @Roles(MemberType.ADMIN)
+  @UseGuards(RolesGuard)
+  @Mutation(() => Comment)
+  public async removeCommentByAdmin(@Args('commentId') input: string): Promise<Comment> {
+    console.log('Mutation: removeCommentByAdmin');
+    const commentId = shapeIntoMongoObjectId(input);
+    return await this.commentService.removeCommentByAdmin(commentId);
   }
 }
