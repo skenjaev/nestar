@@ -62,7 +62,10 @@ export class MemberResolver {
 
   @UseGuards(WithoutGuard)
   @Query(() => Member)
-  public async getMember(@Args('memberId') input: string, @AuthMember('_id') memberId: ObjectId): Promise<Member | null> {
+  public async getMember(
+    @Args('memberId') input: string,
+    @AuthMember('_id') memberId: ObjectId,
+  ): Promise<Member | null> {
     console.log('Query: getMember');
     console.log('memberId:', memberId);
     const targetId = shapeIntoMongoObjectId(input);
@@ -74,6 +77,17 @@ export class MemberResolver {
   public async getAgents(@Args('input') input: AgentsInquiry, @AuthMember('_id') memberId: ObjectId): Promise<Members> {
     console.log('Query: getAgents');
     return await this.memberService.getAgents(memberId, input);
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => Member)
+  public async likeTargetMember(
+    @Args('memberId') input: string,
+    @AuthMember('_id') memberId: ObjectId,
+  ): Promise<Member> {
+    console.log('Mutation: LikeTargetMember');
+    const likeRefId = shapeIntoMongoObjectId(input);
+    return await this.memberService.likeTargetMember(memberId, likeRefId);
   }
 
   /** ADMIN **/
