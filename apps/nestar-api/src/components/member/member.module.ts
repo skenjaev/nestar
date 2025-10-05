@@ -20,6 +20,6 @@ import { LikeModule } from '../like/like.module';
     LikeModule,
   ],
   providers: [MemberResolver, MemberService],
-  exports: [MemberService]
+  exports: [MemberService],
 })
 export class MemberModule {}
