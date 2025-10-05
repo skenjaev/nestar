@@ -14,23 +14,23 @@ import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
 import { Like, MeLiked } from '../../libs/dto/like/like';
+import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
+import { AbstractWsAdapter } from '@nestjs/websockets';
 
 @Injectable()
 export class MemberService {
   constructor(
     @InjectModel('Member') private readonly memberModel: Model<Member>,
+    @InjectModel('Follow') private readonly followModel: Model<Follower | Following>,
     private authService: AuthService,
     private viewService: ViewService,
     private likeService: LikeService,
   ) {}
 
   public async signup(input: MemberInput): Promise<Member> {
-    // Hash Password
     input.memberPassword = await this.authService.hashPassword(input.memberPassword);
     try {
       const result = await this.memberModel.create(input);
-
-      // Authentication via TOKEN
       result.accessToken = await this.authService.createToken(result);
       return result;
     } catch (err) {
@@ -88,8 +88,6 @@ export class MemberService {
     const targetMember = (await this.memberModel.findOne(search).exec())?.toObject();
     if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
-    
-
     if (memberId) {
       // record view
       const viewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER };
@@ -100,13 +98,29 @@ export class MemberService {
         targetMember.memberViews++;
       }
 
-      // meLiked
       const likeInput = { memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER };
       targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
+
       // meFollowed
+
+      targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
     }
 
     return targetMember;
+  }
+
+  public async checkSubscription(
+    followerId: ObjectId,
+    followingId: ObjectId
+  ): Promise<MeFollowed[]> {
+    const result = await this.followModel.findOne({
+      followerId,
+      followingId,
+    });
+  
+    return result
+      ? [{ followerId, followingId, myFollowing: true }]
+      : [];
   }
 
   public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
@@ -115,7 +129,6 @@ export class MemberService {
     const sort: T = { [input?.sort ?? 'CreatedAt']: input?.direction ?? Direction.DESC };
 
     if (text) match.memberNick = { $regex: new RegExp(text, 'i') };
-    console.log('MATCH>>>', match);
 
     const result = await this.memberModel
       .aggregate([
@@ -167,7 +180,6 @@ export class MemberService {
     if (memberStatus) match.memberStatus = memberStatus;
     if (memberType) match.memberType = memberType;
     if (text) match.memberNick = { $regex: new RegExp(text, 'i') };
-    console.log('MATCH>>>', match);
 
     const result = await this.memberModel
       .aggregate([

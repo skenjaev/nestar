@@ -42,7 +42,9 @@ export class MemberResolver {
   @Roles(MemberType.USER, MemberType.AGENT)
   @UseGuards(RolesGuard)
   @Query(() => String)
-  public async checkAuthRoles(@AuthMember() authmember: Member): Promise<string> {
+  public async checkAuthRoles(
+    @AuthMember() authmember: Member, //
+  ): Promise<string> {
     console.log('Query: checkAuthRoles');
     return `Hi ${authmember.memberNick} you are ${authmember.memberType} (memberId: ${authmember._id})`;
   }
@@ -74,7 +76,10 @@ export class MemberResolver {
 
   @UseGuards(WithoutGuard)
   @Query(() => Members)
-  public async getAgents(@Args('input') input: AgentsInquiry, @AuthMember('_id') memberId: ObjectId): Promise<Members> {
+  public async getAgents(
+    @Args('input') input: AgentsInquiry,
+    @AuthMember('_id') memberId: ObjectId, //
+  ): Promise<Members> {
     console.log('Query: getAgents');
     return await this.memberService.getAgents(memberId, input);
   }
@@ -83,7 +88,7 @@ export class MemberResolver {
   @Mutation(() => Member)
   public async likeTargetMember(
     @Args('memberId') input: string,
-    @AuthMember('_id') memberId: ObjectId,
+    @AuthMember('_id') memberId: ObjectId, //
   ): Promise<Member> {
     console.log('Mutation: LikeTargetMember');
     const likeRefId = shapeIntoMongoObjectId(input);
@@ -96,7 +101,9 @@ export class MemberResolver {
   @Roles(MemberType.ADMIN)
   @UseGuards(RolesGuard)
   @Query(() => Members)
-  public async getAllMembersByAdmin(@Args('input') input: MembersInquiry): Promise<Members> {
+  public async getAllMembersByAdmin(
+    @Args('input') input: MembersInquiry, //
+  ): Promise<Members> {
     console.log('Query: getAllMembersByAdmin');
     return await this.memberService.getAllMembersByAdmin(input);
   }
@@ -105,7 +112,9 @@ export class MemberResolver {
   @Roles(MemberType.ADMIN)
   @UseGuards(RolesGuard)
   @Mutation(() => Member)
-  public async updateMemberByAdmin(@Args('input') input: MemberUpdate): Promise<Member> {
+  public async updateMemberByAdmin(
+    @Args('input') input: MemberUpdate //
+  ): Promise<Member> {
     console.log('Mutation: updateMemberByAdmin');
     return await this.memberService.updateMemberByAdmin(input);
   }
