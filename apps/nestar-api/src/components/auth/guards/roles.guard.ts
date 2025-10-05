@@ -32,10 +32,7 @@ export class RolesGuard implements CanActivate {
 			request.body.authMember = authMember;
 			return true;
 		}
-<<<<<<< HEAD
-=======
 		return false;
->>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 
 		// description => http, rpc, gprs and etc are ignored
 	}

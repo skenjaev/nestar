@@ -16,11 +16,7 @@ import { BoardArticleModule } from './board-article/board-article.module';
 		BoardArticleModule,
 		LikeModule,
 		ViewModule,
-<<<<<<< HEAD
-		CommentModule,
-=======
         CommentModule,
->>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 		FollowModule,
 	],
 })

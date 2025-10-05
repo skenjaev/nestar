@@ -1,13 +1,4 @@
 {
-<<<<<<< HEAD
-	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"declaration": false,
-		"outDir": "../../dist/apps/nestar-api"
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
-=======
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
@@ -15,5 +6,4 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
->>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
 }

@@ -18,13 +18,6 @@ import { ViewModule } from '../view/view.module';
     ViewModule,
   ],
   providers: [MemberResolver, MemberService],
-<<<<<<< HEAD
-  exports: [MemberService],
-})
-export class MemberModule {}
-
-=======
   exports: [MemberService]
 })
 export class MemberModule {}
->>>>>>> 64aa8b8 (feat: nestar loyihani qaytib tikladim)
