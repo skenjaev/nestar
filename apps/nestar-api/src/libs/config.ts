@@ -2,7 +2,6 @@ import { ObjectId } from 'bson';
 
 export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
 export const availableMemberSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
-
 export const avaliableOptions = ['propertyBarter', 'propertyRent'];
 export const avaliablePropertySorts = [
   'createdAt',
@@ -12,6 +11,8 @@ export const avaliablePropertySorts = [
   'propertyRank',
   'propertyPrice',
 ];
+export const availableArticlesSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
+export const availableCommentSorts = ['createdAt', 'updatedAt'];
 
 // IMAGE CONFIGURATION (config.js)
 import { v4 as uuidv4 } from 'uuid';
@@ -35,7 +36,3 @@ export const lookupMember = {
     as: 'memberData',
   },
 };
-
-// ---- fix: add missing aliases for sorts ----
-export const availableArticlesSorts = availableAgentSorts;
-export const availableCommentSorts = availableAgentSorts;

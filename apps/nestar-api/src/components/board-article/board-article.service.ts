@@ -245,7 +245,7 @@ export class BoardArticleService {
   public async boardArticleStatsEditor(input: StatisticModifier): Promise<BoardArticle | null> {
     const { _id, targetKey, modifier } = input;
     return await this.boardArticleModel
-      .findOneAndUpdate(
+      .findByIdAndUpdate(
         _id,
         {
           $inc: { [targetKey]: modifier },
