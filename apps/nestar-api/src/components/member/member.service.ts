@@ -13,6 +13,7 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
+import { Like, MeLiked } from '../../libs/dto/like/like';
 
 @Injectable()
 export class MemberService {
@@ -83,8 +84,11 @@ export class MemberService {
         $in: [MemberStatus.ACTIVE, MemberStatus.BLOCK],
       },
     };
-    const targetMember = await this.memberModel.findOne(search).lean().exec();
+    // const targetMember = await this.memberModel.findOne(search).lean().exec();
+    const targetMember = (await this.memberModel.findOne(search).exec())?.toObject();
     if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+    
 
     if (memberId) {
       // record view
@@ -95,6 +99,11 @@ export class MemberService {
         await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 } }, { new: true }).exec();
         targetMember.memberViews++;
       }
+
+      // meLiked
+      const likeInput = { memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER };
+      targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
+      // meFollowed
     }
 
     return targetMember;
@@ -133,7 +142,7 @@ export class MemberService {
 
     const input: LikeInput = {
       memberId: memberId,
-        likeRefId: likeRefId,
+      likeRefId: likeRefId,
       likeGroup: LikeGroup.MEMBER,
     };
 
