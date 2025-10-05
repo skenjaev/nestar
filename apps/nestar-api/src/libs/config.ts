@@ -38,7 +38,6 @@ export const lookupMember = {
 	},
 =======
 export const availableMemberSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
-
 export const avaliableOptions = ['propertyBarter', 'propertyRent'];
 export const avaliablePropertySorts = [
   'createdAt',
@@ -48,8 +47,8 @@ export const avaliablePropertySorts = [
   'propertyRank',
   'propertyPrice',
 ];
-
-export const availableArticletSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
+export const availableArticlesSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
+export const availableCommentSorts = ['createdAt', 'updatedAt'];
 
 // IMAGE CONFIGURATION (config.js)
 import { v4 as uuidv4 } from 'uuid';
